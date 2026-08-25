@@ -19,19 +19,16 @@ async def main():
     dp = Dispatcher()
 
 
-    # подключаем хендлеры
     dp.include_router(fsm_router)
 
-    # роутер удаления товара
     dp.include_router(delete_router)
 
 
-    # создаём таблицы при запуске
     await create_table()
 
 
-    # запуск бота
     await dp.start_polling(bot)
+
 
 
 if __name__ == "__main__":

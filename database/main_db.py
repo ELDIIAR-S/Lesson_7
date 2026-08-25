@@ -32,8 +32,8 @@ async def create_table():
 
 
 
-# добавление товара в первую таблицу
-async def add_product(
+# добавление товара в таблицу products
+async def add_product_db(
         product_id,
         name,
         price
@@ -54,8 +54,8 @@ async def add_product(
 
 
 
-# добавление информации о товаре во вторую таблицу
-async def add_product_info(
+# добавление информации о товаре
+async def add_product_info_db(
         product_id,
         category,
         description
@@ -76,7 +76,7 @@ async def add_product_info(
 
 
 
-# получение списка товаров через INNER JOIN
+# получение всех товаров через INNER JOIN
 async def get_products():
 
     async with aiosqlite.connect(DB_NAME) as db:
@@ -85,14 +85,14 @@ async def get_products():
             SELECT_PRODUCTS
         )
 
-        result = await cursor.fetchall()
+        products = await cursor.fetchall()
 
-        return result
+        return products
 
 
 
 # получение одного товара
-async def get_product(product_id):
+async def get_product_db(product_id):
 
     async with aiosqlite.connect(DB_NAME) as db:
 
@@ -101,9 +101,9 @@ async def get_product(product_id):
             (product_id,)
         )
 
-        result = await cursor.fetchone()
+        product = await cursor.fetchone()
 
-        return result
+        return product
 
 
 
@@ -112,14 +112,14 @@ async def delete_product(product_id):
 
     async with aiosqlite.connect(DB_NAME) as db:
 
-        # удаляем дополнительную информацию
+        # сначала удаляем связанную информацию
         await db.execute(
             DELETE_PRODUCT_INFO,
             (product_id,)
         )
 
 
-        # удаляем сам товар
+        # потом удаляем сам товар
         await db.execute(
             DELETE_PRODUCT,
             (product_id,)
